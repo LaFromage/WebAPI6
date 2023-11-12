@@ -48,12 +48,37 @@ namespace WebAPI6.Controllers
         }
 
         [HttpGet("GetAllUsers")]
-        [Authorize]
+        //[Authorize]
         public IActionResult GetAllUsers()
         {
             var users = userManager.Users.ToList();
             return Ok(users);
         }
+
+        [HttpGet("GetUserById/{id}")]
+        //[Authorize]
+        public async Task<IActionResult> GetUserById(string id)
+        {
+            var user = await userManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            
+            var userDto = new UserDto
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email!
+                
+            };
+
+            return Ok(userDto);
+        }
+
 
         [HttpPut("UpdateUser/{id}")]
         [Authorize]
